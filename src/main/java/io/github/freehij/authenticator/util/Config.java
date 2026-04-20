@@ -21,6 +21,7 @@ public class Config extends File {
         } catch (IOException e) {
             log("Failed to load config: " + path);
         }
+        save();
     }
 
     public String get(String key, String defaultValue) {
@@ -30,6 +31,14 @@ public class Config extends File {
 
     public int get(String key, int defaultValue) {
         return Integer.parseInt(get(key, String.valueOf(defaultValue)));
+    }
+
+    public long get(String key, long defaultValue) {
+        return Long.parseLong(get(key, String.valueOf(defaultValue)));
+    }
+
+    public boolean get(String key, boolean defaultValue) {
+        return Boolean.parseBoolean(get(key, String.valueOf(defaultValue)));
     }
 
     @Override

@@ -11,13 +11,13 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class PlayerAuthData {
-    static final Map<ServerPlayer, Entry> map = new HashMap<>();
+    static final Map<ServerPlayer, AuthDataEntry> map = new HashMap<>();
 
-    static class Entry {
+    static class AuthDataEntry {
         int attempts;
         final PlayerData playerData;
 
-        Entry(int attempts, PlayerData playerData) {
+        AuthDataEntry(int attempts, PlayerData playerData) {
             this.attempts = attempts;
             this.playerData = playerData;
         }
@@ -56,6 +56,7 @@ public class PlayerAuthData {
             EnumMap<EquipmentSlot, ItemStack> equipmentInv = ((EnumMap<EquipmentSlot, ItemStack>) invReflector
                     .getField("equipment").getField("items").get());
             equipmentInv.putAll(equipmentInvItems);
+            player.tickCount = 0;
         }
     }
 
@@ -73,12 +74,13 @@ public class PlayerAuthData {
     }
 
     public static void createNew(ServerPlayer player) {
-        map.put(player, new Entry(0, new PlayerData(player)));
+        map.put(player, new AuthDataEntry(0, new PlayerData(player)));
         if (player.isDeadOrDying()) player.setHealth(20);
         player.setPos(0, 65, 0);
         player.setYRot(0);
         player.setXRot(0);
         player.getInventory().clearContent();
+        player.tickCount = 0;
     }
 
     public static void removeSafe(ServerPlayer player) {

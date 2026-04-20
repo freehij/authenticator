@@ -13,19 +13,18 @@ Download the latest release [here](https://github.com/freehij/authenticator/rele
 # How to use
 1. Download and install [javaagent-modloader](https://github.com/freehij/javaagent-modloader) (see the provided instructions on how to install it).
 2. [Download](https://github.com/freehij/authenticator#downloads) or [build](https://github.com/freehij/authenticator#building) the mod and put it in your servers mod folder.
-3. Run the server and ensure that you see message `[Authenticator] Initializing Authenticator.` in console.
+3. Run the server and ensure that you see the `[Authenticator] Initializing Authenticator.` message in console.
 
 # Configuring
 Configuration is located in `/config/authenticator.json`.  
 Settings should be pretty straight forward.  
-Note that `login-timeout` and `save-interval` should be specified in ticks.
+Note that `login-timeout` and `save-interval` should be specified in ticks while `session_time` in seconds.
 
 # TODO
 - More encryption algorithms.
-- Sessions.
 - Config library instead of a custom solution.
-- Proper command syntax.
 - Integrated server support.
+- Erase session param in admin commands
 
 # Known issues
 These will most likely be fixed really soon so don't report them.

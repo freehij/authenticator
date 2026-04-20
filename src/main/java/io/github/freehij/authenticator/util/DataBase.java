@@ -1,5 +1,7 @@
 package io.github.freehij.authenticator.util;
 
+import io.github.freehij.authenticator.value.Values;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,11 +33,15 @@ public class DataBase extends File {
 
     List<String> readLines(Path path1) throws IOException {
         try (InputStream in = Files.newInputStream(path1)) {
-            try (GZIPInputStream gz = new GZIPInputStream(in);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(gz))) {
-                return reader.lines().toList();
+            try {
+                return new BufferedReader(new InputStreamReader(new GZIPInputStream(in))).lines().toList();
             } catch (IOException e) {
-                return Files.readAllLines(path1);
+                if (e.getMessage().contains("Not in GZIP format")) {
+                    try (InputStream in2 = Files.newInputStream(path1)) {
+                        return new BufferedReader(new InputStreamReader(in2)).lines().toList();
+                    }
+                }
+                throw e;
             }
         }
     }
@@ -51,6 +57,7 @@ public class DataBase extends File {
 
     public void remove(String name) {
         shouldSave = true;
+        Sessions.eraseSession(name);
         nameToHash.remove(name);
     }
 
@@ -60,15 +67,18 @@ public class DataBase extends File {
 
     @Override
     public void save() {
+        if (!shouldSave) return;
         StringBuilder sb = new StringBuilder("username\thash\n");
         for (Map.Entry<String, String> e : nameToHash.entrySet())
             sb.append(e.getKey()).append("\t").append(e.getValue()).append("\n");
         try (OutputStream out = Files.newOutputStream(path);
-             GZIPOutputStream gz = new GZIPOutputStream(out);
-             Writer writer = new OutputStreamWriter(gz)) {
+             Writer writer = Values.compressDatabase ?
+                     new OutputStreamWriter(new GZIPOutputStream(out)) :
+                     new OutputStreamWriter(out)) {
             writer.write(sb.toString());
         } catch (IOException e) {
             log("Failed to save database: " + path);
         }
+        shouldSave = false;
     }
 }
