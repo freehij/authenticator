@@ -19,7 +19,7 @@ public abstract class File {
             if (this.path.getParent() != null) Files.createDirectories(this.path.getParent());
             if (!Files.exists(this.path)) Files.createFile(this.path);
         } catch (IOException e) {
-            this.log("Failed to create file: " + path);
+            log("Failed to create file: " + path);
         }
     }
 

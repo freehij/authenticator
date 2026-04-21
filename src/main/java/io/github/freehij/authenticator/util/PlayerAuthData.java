@@ -1,6 +1,6 @@
-package io.github.freehij.authenticator.player;
+package io.github.freehij.authenticator.util;
 
-import io.github.freehij.authenticator.value.Values;
+import io.github.freehij.authenticator.data.Values;
 import io.github.freehij.loader.util.Reflector;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -45,6 +45,7 @@ public class PlayerAuthData {
         }
 
         public void restore() {
+            player.setPos(x, y, z);
             player.connection.teleport(x, y, z, pitch, yaw);
             player.setHealth(health);
             Reflector invReflector = new Reflector(Inventory.class, player.getInventory());

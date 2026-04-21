@@ -21,14 +21,12 @@ Settings should be pretty straight forward.
 Note that `login-timeout` and `save-interval` should be specified in ticks while `session_time` in seconds.
 
 # TODO
-- More encryption algorithms.
 - Config library instead of a custom solution.
 - Integrated server support.
-- Erase session param in admin commands
+- Erase session param in admin commands.
 
 # Known issues
 These will most likely be fixed really soon so don't report them.
-- Server can sometimes send a warning `<player> moved too quickly!` after logging in.
 - Might be incompatible with some plugins/mods (mostly anticheats).
 - Mild performance issues with big player count.
 

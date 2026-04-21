@@ -1,6 +1,6 @@
 package io.github.freehij.authenticator.util;
 
-import io.github.freehij.authenticator.value.Values;
+import io.github.freehij.authenticator.data.Values;
 
 import java.util.HashMap;
 import java.util.Map;

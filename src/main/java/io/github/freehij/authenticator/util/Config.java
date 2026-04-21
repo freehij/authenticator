@@ -41,6 +41,14 @@ public class Config extends File {
         return Boolean.parseBoolean(get(key, String.valueOf(defaultValue)));
     }
 
+    public <T extends Enum<T>> T get(String key, T defaultValue) {
+        try {
+            return Enum.valueOf(defaultValue.getDeclaringClass(), get(key, defaultValue.name()));
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
+    }
+
     @Override
     public void save() {
         try {

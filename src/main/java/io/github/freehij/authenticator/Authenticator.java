@@ -2,8 +2,8 @@ package io.github.freehij.authenticator;
 
 import io.github.freehij.authenticator.util.Config;
 import io.github.freehij.authenticator.util.DataBase;
-import io.github.freehij.authenticator.value.Messages;
-import io.github.freehij.authenticator.value.Values;
+import io.github.freehij.authenticator.data.Messages;
+import io.github.freehij.authenticator.data.Values;
 import io.github.freehij.loader.util.Logger;
 import net.minecraft.server.MinecraftServer;
 
@@ -38,6 +38,7 @@ public class Authenticator {
         Values.sessions = config.get("sessions", false);
         Values.sessionTime = config.get("session_time", 1800);
         Values.compressDatabase = config.get("compress_database", Values.compressDatabase);
+        Values.encryptionType = config.get("encryption_type", Values.encryptionType);
         config.save();
     }
 }

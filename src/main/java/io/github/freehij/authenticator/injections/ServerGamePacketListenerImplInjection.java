@@ -1,7 +1,7 @@
 package io.github.freehij.authenticator.injections;
 
-import io.github.freehij.authenticator.player.PlayerAuthData;
-import io.github.freehij.authenticator.value.Messages;
+import io.github.freehij.authenticator.util.PlayerAuthData;
+import io.github.freehij.authenticator.data.Messages;
 import io.github.freehij.loader.annotation.EditClass;
 import io.github.freehij.loader.annotation.Inject;
 import io.github.freehij.loader.util.InjectionHelper;

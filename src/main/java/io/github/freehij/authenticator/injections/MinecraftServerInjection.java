@@ -1,8 +1,8 @@
 package io.github.freehij.authenticator.injections;
 
 import io.github.freehij.authenticator.Authenticator;
-import io.github.freehij.authenticator.player.PlayerAuthData;
-import io.github.freehij.authenticator.value.Values;
+import io.github.freehij.authenticator.util.PlayerAuthData;
+import io.github.freehij.authenticator.data.Values;
 import io.github.freehij.loader.annotation.EditClass;
 import io.github.freehij.loader.annotation.Inject;
 import io.github.freehij.loader.constant.At;

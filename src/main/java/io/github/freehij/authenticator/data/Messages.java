@@ -1,8 +1,8 @@
-package io.github.freehij.authenticator.value;
+package io.github.freehij.authenticator.data;
 
 public class Messages {
     public static String register, login, alreadyRegistered, wrongPass, notLoggedIn, authSuccess, notRegistered,
-            tooManyAttempts, tookTooLongToLogin, passwordTooLong, passwordTooSmall, sessionLogin, unRegSuccess = "";
+            tooManyAttempts, tookTooLongToLogin, passwordTooLong, passwordTooSmall, sessionLogin, unRegSuccess;
 
     public static String replaceSpecialSequence(String original, Object replacement) {
         return original.replace("%s", replacement.toString());

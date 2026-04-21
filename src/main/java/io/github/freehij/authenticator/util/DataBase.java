@@ -1,6 +1,6 @@
 package io.github.freehij.authenticator.util;
 
-import io.github.freehij.authenticator.value.Values;
+import io.github.freehij.authenticator.data.Values;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,7 +12,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class DataBase extends File {
-    final Map<String, String> nameToHash = new HashMap<>();
+    record DatabaseEntry(String hash, Cryptography.EncryptionType algorithm) { }
+
+    final Map<String, DatabaseEntry> nameToHash = new HashMap<>();
     public boolean shouldSave = false;
 
     public DataBase(final String fileName) {
@@ -22,7 +24,22 @@ public class DataBase extends File {
                 List<String> lines = readLines(path);
                 for (int i = 1; i < lines.size(); i++) {
                     String[] parts = lines.get(i).split("\t");
-                    if (parts.length == 2) nameToHash.put(parts[0], parts[1]);
+                    if (parts.length >= 2) {
+                        String name = parts[0];
+                        Cryptography.EncryptionType algorithm = Cryptography.EncryptionType.SHA256;
+                        String hash;
+                        if (parts.length >= 3) {
+                            try {
+                                algorithm = Cryptography.EncryptionType.valueOf(parts[1]);
+                                hash = parts[2];
+                            } catch (IllegalArgumentException e) {
+                                hash = parts[1];
+                            }
+                        } else {
+                            hash = parts[1];
+                        }
+                        nameToHash.put(name, new DatabaseEntry(hash, algorithm));
+                    }
                 }
             } catch (IOException e) {
                 log("Failed to read database: " + path);
@@ -33,15 +50,15 @@ public class DataBase extends File {
 
     List<String> readLines(Path path1) throws IOException {
         try (InputStream in = Files.newInputStream(path1)) {
-            try {
-                return new BufferedReader(new InputStreamReader(new GZIPInputStream(in))).lines().toList();
+            try (InputStream gz = new GZIPInputStream(in)) {
+                return new BufferedReader(new InputStreamReader(gz)).lines().toList();
+            } catch (EOFException e) {
+                return List.of();
             } catch (IOException e) {
-                if (e.getMessage().contains("Not in GZIP format")) {
-                    try (InputStream in2 = Files.newInputStream(path1)) {
-                        return new BufferedReader(new InputStreamReader(in2)).lines().toList();
-                    }
+                if (!e.getMessage().contains("Not in GZIP format")) throw e;
+                try (InputStream in2 = Files.newInputStream(path1)) {
+                    return new BufferedReader(new InputStreamReader(in2)).lines().toList();
                 }
-                throw e;
             }
         }
     }
@@ -52,7 +69,7 @@ public class DataBase extends File {
 
     public void set(String name, String password) {
         shouldSave = true;
-        nameToHash.put(name, Cryptography.hash(name, password));
+        nameToHash.put(name, new DatabaseEntry(Cryptography.hash(name, password), Values.encryptionType));
     }
 
     public void remove(String name) {
@@ -62,15 +79,17 @@ public class DataBase extends File {
     }
 
     public boolean checkPassword(String name, String password) {
-        return nameToHash.get(name).equals(Cryptography.hash(name, password));
+        DatabaseEntry entry = nameToHash.get(name);
+        return entry.hash.equals(Cryptography.hash(name, password, entry.algorithm));
     }
 
     @Override
     public void save() {
         if (!shouldSave) return;
-        StringBuilder sb = new StringBuilder("username\thash\n");
-        for (Map.Entry<String, String> e : nameToHash.entrySet())
-            sb.append(e.getKey()).append("\t").append(e.getValue()).append("\n");
+        StringBuilder sb = new StringBuilder("username\talgorithm\thash\n");
+        for (Map.Entry<String, DatabaseEntry> e : nameToHash.entrySet())
+            sb.append(e.getKey()).append("\t").append(e.getValue().algorithm.name()).append("\t")
+                    .append(e.getValue().hash).append("\n");
         try (OutputStream out = Files.newOutputStream(path);
              Writer writer = Values.compressDatabase ?
                      new OutputStreamWriter(new GZIPOutputStream(out)) :

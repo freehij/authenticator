@@ -1,17 +1,10 @@
-package io.github.freehij.authenticator.value;
+package io.github.freehij.authenticator.data;
+
+import io.github.freehij.authenticator.util.Cryptography;
 
 public class Values {
     public static int minPasswordLength, maxPasswordLength, maxLoginAttempts, loginTimeOut, saveInterval;
     public static boolean sessions, compressDatabase = true;
     public static long sessionTime;
-
-    /*public enum EncryptionType {
-        MD5,
-        SHA1,
-        SHA256,
-        SHA384,
-        SHA512
-    }
-
-    public static EncryptionType encryptionType;*/
+    public static Cryptography.EncryptionType encryptionType = Cryptography.EncryptionType.SHA256;
 }
