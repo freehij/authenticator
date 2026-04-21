@@ -5,7 +5,6 @@ import io.github.freehij.authenticator.data.Messages;
 import io.github.freehij.loader.annotation.EditClass;
 import io.github.freehij.loader.annotation.Inject;
 import io.github.freehij.loader.util.InjectionHelper;
-import io.github.freehij.loader.util.Reflector;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -23,10 +22,7 @@ public class ServerGamePacketListenerImplInjection {
 
     @Inject(method = "tickPlayer")
     public static void tickPlayerInjection(InjectionHelper helper) {
-        if (PlayerAuthData.exists(((ServerGamePacketListenerImpl) helper.getSelf()).player)) {
-            Reflector reflector = helper.getReflector();
-            reflector.setField("aboveGroundTickCount", 0);
-            reflector.setField("aboveGroundVehicleTickCount", 0);
-        }
+        ServerGamePacketListenerImpl connection = ((ServerGamePacketListenerImpl) helper.getSelf());
+        if (PlayerAuthData.exists(connection.player)) connection.resetFlyingTicks();
     }
 }

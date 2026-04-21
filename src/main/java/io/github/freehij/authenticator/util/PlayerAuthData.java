@@ -45,8 +45,8 @@ public class PlayerAuthData {
         }
 
         public void restore() {
-            player.setPos(x, y, z);
             player.connection.teleport(x, y, z, pitch, yaw);
+            player.connection.resetPosition();
             player.setHealth(health);
             Reflector invReflector = new Reflector(Inventory.class, player.getInventory());
             List<ItemStack> mainInv = (List<ItemStack>) invReflector.getField("items").get();
