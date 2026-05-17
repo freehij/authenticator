@@ -11,6 +11,7 @@ import io.github.freehij.authenticator.util.PlayerAuthData;
 import io.github.freehij.authenticator.util.Sessions;
 import io.github.freehij.authenticator.data.Messages;
 import io.github.freehij.authenticator.data.Values;
+import io.github.freehij.authenticator.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ public class AuthenticatorCommands {
                         .executes((c) -> {
                             if (c.getSource().isPlayer()) {
                                 ServerPlayer player = c.getSource().getPlayer();
+                                if (Utils.isLocal(player.connection)) return 1;
                                 if (!PlayerAuthData.exists(player)) return 1;
                                 String username = c.getSource().getTextName();
                                 if (!Authenticator.database.isRegistered(username)) {
@@ -56,11 +58,13 @@ public class AuthenticatorCommands {
                 .then(Commands.argument("password", StringArgumentType.greedyString())
                         .executes((c) -> {
                             if (c.getSource().isPlayer()) {
+                                ServerPlayer player = c.getSource().getPlayer();
+                                if (Utils.isLocal(player.connection)) return 1;
                                 String username = c.getSource().getTextName();
                                 if (Authenticator.database.checkPassword(username,
                                         StringArgumentType.getString(c, "password"))) {
                                     Authenticator.database.remove(username);
-                                    PlayerAuthData.createNew(c.getSource().getPlayer());
+                                    PlayerAuthData.createNew(player);
                                     c.getSource().sendSystemMessage(Component.literal(Messages.unRegSuccess));
                                 } else {
                                     c.getSource().sendSystemMessage(Component.literal(Messages.wrongPass));
@@ -77,6 +81,7 @@ public class AuthenticatorCommands {
                         .executes((c) -> {
                             if (c.getSource().isPlayer()) {
                                 ServerPlayer player = c.getSource().getPlayer();
+                                if (Utils.isLocal(player.connection)) return 1;
                                 if (!PlayerAuthData.exists(player)) return 1;
                                 String username = c.getSource().getTextName();
                                 if (Authenticator.database.isRegistered(username)) {
@@ -113,6 +118,7 @@ public class AuthenticatorCommands {
                                         c.getSource().sendSystemMessage(Component.literal("§cPlayer is offline."));
                                         return 1;
                                     }
+                                    if (Utils.isLocal(player.connection)) return 1;
                                     if (!PlayerAuthData.exists(player)) {
                                         c.getSource().sendSystemMessage(
                                                 Component.literal("§cPlayer is already logged in."));
@@ -156,6 +162,7 @@ public class AuthenticatorCommands {
                                         c.getSource().sendSystemMessage(Component.literal("§cPlayer is offline."));
                                         return 1;
                                     }
+                                    if (Utils.isLocal(player.connection)) return 1;
                                     if (PlayerAuthData.exists(player)) {
                                         c.getSource().sendSystemMessage(
                                                 Component.literal("§cPlayer is not logged in."));
@@ -173,6 +180,7 @@ public class AuthenticatorCommands {
 
     static final SuggestionProvider<CommandSourceStack> PLAYERS_SUGGESTION = (c, b) -> {
         for (ServerPlayer player : c.getSource().getServer().getPlayerList().getPlayers()) {
+            if (Utils.isLocal(player.connection)) continue;
             b.suggest(player.getName().getString());
         }
         return b.buildFuture();
@@ -223,6 +231,7 @@ public class AuthenticatorCommands {
         if (shouldLogin) {
             ServerPlayer player = Authenticator.server.getPlayerList().getPlayerByName(username);
             if (player != null) {
+                if (Utils.isLocal(player.connection)) return;
                 PlayerAuthData.removeSafe(player);
                 player.sendSystemMessage(Component.literal("You've been authenticated via an admin command."));
                 context.getSource().sendSystemMessage(

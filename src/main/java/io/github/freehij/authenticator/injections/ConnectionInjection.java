@@ -20,6 +20,7 @@ public class ConnectionInjection {
     }
 
     static ServerPlayer getPlayer(Connection connection) {
+        if (Authenticator.server == null) return null;
         for (ServerPlayer player : Authenticator.server.getPlayerList().getPlayers()) {
             if (new Reflector(ServerCommonPacketListenerImpl.class, player.connection).getField("connection").get()
                     == connection) {
