@@ -188,12 +188,13 @@ public class AuthenticatorCommands {
 
     static void executeAdminUnregister(CommandContext<CommandSourceStack> context, boolean shouldLogout) {
         String username = StringArgumentType.getString(context, "target");
+        ServerPlayer player = Authenticator.server.getPlayerList().getPlayerByName(username);
+        if (player != null && Utils.isLocal(player.connection)) return;
         if (!Authenticator.database.isRegistered(username)) {
             context.getSource().sendSystemMessage(Component.literal("§cPlayer is not registered."));
             return;
         }
         Authenticator.database.remove(username);
-        ServerPlayer player = Authenticator.server.getPlayerList().getPlayerByName(username);
         if (shouldLogout) {
             if (player != null) {
                 if (!PlayerAuthData.exists(player)) PlayerAuthData.createNew(player);
@@ -212,6 +213,8 @@ public class AuthenticatorCommands {
 
     static void executeAdminRegister(CommandContext<CommandSourceStack> context, boolean shouldLogin) {
         String username = StringArgumentType.getString(context, "target");
+        ServerPlayer player = Authenticator.server.getPlayerList().getPlayerByName(username);
+        if (player != null && Utils.isLocal(player.connection)) return;
         if (Authenticator.database.isRegistered(username)) {
             context.getSource().sendSystemMessage(Component.literal("§cPlayer is already registered."));
             return;
@@ -229,7 +232,6 @@ public class AuthenticatorCommands {
         }
         Authenticator.database.set(username, password);
         if (shouldLogin) {
-            ServerPlayer player = Authenticator.server.getPlayerList().getPlayerByName(username);
             if (player != null) {
                 if (Utils.isLocal(player.connection)) return;
                 PlayerAuthData.removeSafe(player);
