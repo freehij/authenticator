@@ -40,5 +40,6 @@ public class Authenticator {
         Values.compressDatabase = config.get("compress_database", Values.compressDatabase);
         Values.encryptionType = config.get("encryption_type", Values.encryptionType);
         config.save();
+        if (!server.isDedicatedServer()) Values.sessions = false;
     }
 }

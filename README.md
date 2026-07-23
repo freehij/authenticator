@@ -22,11 +22,9 @@ Note that `login-timeout` and `save-interval` should be specified in ticks while
 
 # TODO
 - Config library instead of a custom solution.
-- Integrated server support.
-- Erase session param in admin commands.
 
 # Known issues
-These will most likely be fixed really soon so don't report them.
+These will most likely not be fixed so don't report them.
 - Might be incompatible with some plugins/mods (mostly anticheats).
 - Mild performance issues with big player count.
 

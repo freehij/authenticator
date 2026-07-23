@@ -1,6 +1,7 @@
 package io.github.freehij.authenticator.injections;
 
 import com.google.common.net.InetAddresses;
+import io.github.freehij.authenticator.data.Values;
 import io.github.freehij.authenticator.util.PlayerAuthData;
 import io.github.freehij.authenticator.util.Sessions;
 import io.github.freehij.authenticator.data.Messages;
@@ -25,8 +26,10 @@ public class PlayerListInjection {
         Connection connection = ((Connection) helper.getArg(1));
         if (Utils.isLocal(connection)) return;
         ServerPlayer player = (ServerPlayer) helper.getArg(2);
-        String IP = getIpAddress(connection.getRemoteAddress());
-        if (IP != null && Sessions.checkSession(player.getName().getString(), IP)) return;
+        if (Values.sessions) {
+            String IP = getIpAddress(connection.getRemoteAddress());
+            if (IP != null && Sessions.checkSession(player.getName().getString(), IP)) return;
+        }
         PlayerAuthData.createNew(player);
     }
 
