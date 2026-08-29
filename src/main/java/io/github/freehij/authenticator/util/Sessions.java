@@ -2,8 +2,7 @@ package io.github.freehij.authenticator.util;
 
 import io.github.freehij.authenticator.data.Values;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Sessions {
     static final Map<String, SessionEntry> nameToEntry = new HashMap<>();

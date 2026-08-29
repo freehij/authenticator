@@ -1,14 +1,10 @@
 package io.github.freehij.authenticator.util;
 
-import com.azure.json.JsonProviders;
-import com.azure.json.JsonReader;
-import com.azure.json.JsonWriter;
+import com.azure.json.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Config extends File {
     final Map<String, String> data = new HashMap<>();
@@ -47,6 +43,10 @@ public class Config extends File {
         } catch (IllegalArgumentException e) {
             return defaultValue;
         }
+    }
+
+    public void set(String key, Object value) {
+        data.put(key, String.valueOf(value));
     }
 
     @Override

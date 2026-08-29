@@ -2,10 +2,8 @@ package io.github.freehij.authenticator.injections;
 
 import io.github.freehij.authenticator.Authenticator;
 import io.github.freehij.authenticator.util.PlayerAuthData;
-import io.github.freehij.loader.annotation.EditClass;
-import io.github.freehij.loader.annotation.Inject;
-import io.github.freehij.loader.util.InjectionHelper;
-import io.github.freehij.loader.util.Reflector;
+import io.github.freehij.loader.annotation.*;
+import io.github.freehij.loader.util.*;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;

@@ -3,13 +3,9 @@ package io.github.freehij.authenticator.util;
 import io.github.freehij.authenticator.data.Values;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.nio.file.*;
+import java.util.*;
+import java.util.zip.*;
 
 public class DataBase extends File {
     record DatabaseEntry(String hash, Cryptography.EncryptionType algorithm) { }

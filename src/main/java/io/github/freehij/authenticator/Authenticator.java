@@ -1,15 +1,13 @@
 package io.github.freehij.authenticator;
 
-import io.github.freehij.authenticator.util.Config;
-import io.github.freehij.authenticator.util.DataBase;
-import io.github.freehij.authenticator.data.Messages;
-import io.github.freehij.authenticator.data.Values;
+import io.github.freehij.authenticator.util.*;
+import io.github.freehij.authenticator.data.*;
 import io.github.freehij.loader.util.Logger;
 import net.minecraft.server.MinecraftServer;
 
 public class Authenticator {
     public static final String MOD_ID = "Authenticator";
-    static final Config config = new Config("config/authenticator.json");
+    public static final Config config = new Config("config/authenticator.json");
     public static final DataBase database = new DataBase("database/authenticator");
     public static MinecraftServer server;
 
@@ -40,6 +38,5 @@ public class Authenticator {
         Values.compressDatabase = config.get("compress_database", Values.compressDatabase);
         Values.encryptionType = config.get("encryption_type", Values.encryptionType);
         config.save();
-        if (!server.isDedicatedServer()) Values.sessions = false;
     }
 }

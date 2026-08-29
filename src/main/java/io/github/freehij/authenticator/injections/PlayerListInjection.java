@@ -1,12 +1,9 @@
 package io.github.freehij.authenticator.injections;
 
 import com.google.common.net.InetAddresses;
-import io.github.freehij.authenticator.data.Values;
-import io.github.freehij.authenticator.util.PlayerAuthData;
-import io.github.freehij.authenticator.util.Sessions;
-import io.github.freehij.authenticator.data.Messages;
-import io.github.freehij.loader.annotation.EditClass;
-import io.github.freehij.loader.annotation.Inject;
+import io.github.freehij.authenticator.data.*;
+import io.github.freehij.authenticator.util.*;
+import io.github.freehij.loader.annotation.*;
 import io.github.freehij.loader.constant.At;
 import io.github.freehij.loader.util.InjectionHelper;
 import net.minecraft.network.Connection;
@@ -15,8 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-
-import io.github.freehij.authenticator.util.Utils;
 
 @SuppressWarnings("deprecation")
 @EditClass("net/minecraft/server/players/PlayerList")
