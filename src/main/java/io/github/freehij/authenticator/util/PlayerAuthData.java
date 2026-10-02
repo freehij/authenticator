@@ -1,9 +1,15 @@
 package io.github.freehij.authenticator.util;
 
+import com.google.common.collect.Maps;
 import io.github.freehij.authenticator.data.Values;
 import io.github.freehij.loader.util.Reflector;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,6 +35,7 @@ public class PlayerAuthData {
         final float pitch, yaw, health;
         final ItemStack[] mainInvItems;
         final EnumMap<EquipmentSlot, ItemStack> equipmentInvItems = new EnumMap<>(EquipmentSlot.class);
+        final Map<Holder<MobEffect>, MobEffectInstance> effects;
 
         PlayerData(ServerPlayer player) {
             this.player = player;
@@ -42,6 +49,7 @@ public class PlayerAuthData {
             mainInvItems = ((List<ItemStack>) invReflector.getField("items").get()).toArray(new ItemStack[0]);
             equipmentInvItems.putAll(((EnumMap<EquipmentSlot, ItemStack>) invReflector.getField("equipment")
                     .getField("items").get()));
+            effects = Maps.newHashMap(player.getActiveEffectsMap());
         }
 
         public void restore() {
@@ -54,10 +62,22 @@ public class PlayerAuthData {
                 mainInv.set(i, mainInvItems[i]);
                 player.connection.send(player.getInventory().createInventoryUpdatePacket(i));
             }
-            EnumMap<EquipmentSlot, ItemStack> equipmentInv = ((EnumMap<EquipmentSlot, ItemStack>) invReflector
-                    .getField("equipment").getField("items").get());
+            EnumMap<EquipmentSlot, ItemStack> equipmentInv =
+                    (EnumMap<EquipmentSlot, ItemStack>)
+                            invReflector
+                                    .getField("equipment")
+                                    .getField("items")
+                                    .get();
             equipmentInv.putAll(equipmentInvItems);
             player.tickCount = 0;
+            player.getActiveEffectsMap().putAll(effects);
+            Reflector playerReflector = new Reflector(LivingEntity.class, player);
+            for (MobEffectInstance effect : effects.values())
+                playerReflector.invokeRaw(
+                        "onEffectAdded",
+                        new Class[] { MobEffectInstance.class, Entity.class },
+                        effect, null
+                );
         }
     }
 
@@ -76,12 +96,13 @@ public class PlayerAuthData {
 
     public static void createNew(ServerPlayer player) {
         map.put(player, new AuthDataEntry(0, new PlayerData(player)));
-        if (player.isDeadOrDying()) player.setHealth(20);
+        player.setHealth(20);
         player.setPos(0, 65, 0);
         player.setYRot(0);
         player.setXRot(0);
         player.getInventory().clearContent();
         player.tickCount = 0;
+        player.getActiveEffectsMap().clear();
     }
 
     public static void removeSafe(ServerPlayer player) {
