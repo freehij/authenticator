@@ -10,9 +10,11 @@ import net.minecraft.server.level.ServerPlayer;
 public class LivingEntityInjection {
     @Inject(method = "addEffect")
     public static void addEffectInjection(InjectionHelper helper) {
-        if (PlayerAuthData.exists((ServerPlayer) helper.getSelf())) {
-            helper.setReturnValue(false);
-            helper.setCancelled(true);
+        if (helper.getSelf() instanceof ServerPlayer player) {
+            if (PlayerAuthData.exists(player)) {
+                helper.setReturnValue(false);
+                helper.setCancelled(true);
+            }
         }
     }
 }
